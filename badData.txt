@@ -1,3 +1,4 @@
+Bad Data summary for mass shootings: 
 Missing values for prior_signs_mental_health_issues: 38
 Missing values for mental_health_details: 28
 Missing values for weapons_obtained_legally: 15
@@ -16,5 +17,41 @@ weapon_details: 0.08695652173913043
 race: 0.034782608695652174
 mental_health_sources: 0.30434782608695654
 sources_additional_age: 0.13043478260869565
+
+There were no noise values to measure in this data.
+=========================================================================================
+Bad data summary for movie data: 
+Missing values for Unnamed: 0: 0
+Missing values for adult: 0
+Missing values for backdrop_path: 200
+Missing values for genre_ids: 0
+Missing values for id: 0
+Missing values for original_language: 0
+Missing values for original_title: 0
+Missing values for overview: 71
+Missing values for popularity: 0
+Missing values for poster_path: 23
+Missing values for release_date: 0
+Missing values for title: 0
+Missing values for video: 0
+Missing values for vote_average: 0
+Missing values for vote_count: 0
+
+Fraction of missing values for each attribute:
+Unnamed: 0: 0.0
+adult: 0.0
+backdrop_path: 0.0625
+genre_ids: 0.0
+id: 0.0
+original_language: 0.0
+original_title: 0.0
+overview: 0.0221875
+popularity: 0.0
+poster_path: 0.0071875
+release_date: 0.0
+title: 0.0
+video: 0.0
+vote_average: 0.0
+vote_count: 0.0
 
 There were no noise values to measure in this data.

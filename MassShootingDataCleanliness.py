@@ -30,6 +30,7 @@ def main():
 
     # Write summary of bad data to file
     with open(bad_data_filename, 'w') as f:
+        f.write('Bad Data summary for mass shootings: \n')
         for attr in missing_attributes:
             f.write('Missing values for ' + attr +
                     ': ' + str(missing_attributes[attr]) + '\n')
