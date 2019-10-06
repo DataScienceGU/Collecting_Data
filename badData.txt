@@ -1,0 +1,20 @@
+Missing values for prior_signs_mental_health_issues: 38
+Missing values for mental_health_details: 28
+Missing values for weapons_obtained_legally: 15
+Missing values for where_obtained: 45
+Missing values for weapon_details: 10
+Missing values for race: 4
+Missing values for mental_health_sources: 35
+Missing values for sources_additional_age: 15
+
+Fraction of missing values for each attribute:
+prior_signs_mental_health_issues: 0.33043478260869563
+mental_health_details: 0.24347826086956523
+weapons_obtained_legally: 0.13043478260869565
+where_obtained: 0.391304347826087
+weapon_details: 0.08695652173913043
+race: 0.034782608695652174
+mental_health_sources: 0.30434782608695654
+sources_additional_age: 0.13043478260869565
+
+There were no noise values to measure in this data.
