@@ -57,8 +57,9 @@ def cleanData():
     # first open up the csv file we are working with and pass that into the functions
     myDataFrame = readFile("all_movies.csv", ",")
     myDataFrame = removeEmptyOverviewRows(myDataFrame)
+    myDataFrame = removeUselessColumns(myDataFrame)
     # now take the dataframe and rewrite it into the csv file
-    myDataFrame.to_csv("all_movies.csv")
+    myDataFrame.to_csv("all_movies.csv", index=False)
 
 
 def readFile(file, seperator):
@@ -77,6 +78,11 @@ def removeEmptyOverviewRows(myDataFrame):
     return myDataFrame
 
 
+def removeUselessColumns(myDataFrame):
+    myDataFrame = myDataFrame.drop(columns=['backdrop_path', 'poster_path'])
+    return myDataFrame
+
+
 def main():
 
     # the getMovies() for loop api call has to be hardcoded to be run separate times
@@ -88,9 +94,9 @@ def main():
     # revenue from 1977 to 2016 and so on and so forth for movies3.csv and movies4.csv. In order to run please comment
     # and uncomment the following methods in order as necessary to run the data:
     baseURL = "https://api.themoviedb.org/3/discover/movie"
-    #getMovies(baseURL, 1)
-
-    cleanData()
+    # getMovies(baseURL, 1)
+    # combineMovieFiles()
+    # cleanData()
 
     # this method gets the text name of the genres that the genre ids in the movie csv refer to:
     # getGenres()
