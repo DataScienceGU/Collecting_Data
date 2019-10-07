@@ -1,7 +1,7 @@
 import pandas as pd
 
 in_filename = 'mass_shootings.csv'
-bad_data_filename = 'badData.txt'
+bad_data_filename = 'bad_data_for_mass_shootings.txt'
 
 # Specifically, you should identify missing and incorrect values.
 # You can then record:
@@ -20,7 +20,7 @@ missing_attributes = {'prior_signs_mental_health_issues': 0, 'mental_health_deta
 def main():
     # Read in data as a pandas dataframe
     df = pd.read_csv(in_filename, sep=',', encoding='latin1')
-    
+
     # If a missing attribute is found, increase its counter in the dictionary
     for index, row in df.iterrows():
         for attr in missing_attributes:
