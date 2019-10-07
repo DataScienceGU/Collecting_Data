@@ -6,17 +6,18 @@ import numpy as np
 import pprint
 import time
 
-def getMovies1(baseURL):
+
+def getMovies(baseURL, pageNumber):
     finalDF = pd.DataFrame()
 
     i = 1977
     for i in range(1977, 2017):
-        querystring = {'api_key':'ddb02b46eef4bf31dc4e8bcbc0222a68',
-                    'primary_release_year':str(i),
-                    'sort_by':'revenue.desc',
-                    'language':'en-US',
-                    'page':'1'
-                    }
+        querystring = {'api_key': 'ddb02b46eef4bf31dc4e8bcbc0222a68',
+                       'primary_release_year': str(i),
+                       'sort_by': 'revenue.desc',
+                       'language': 'en-US',
+                       'page': pageNumber,
+                       }
 
         response = requests.get(baseURL, querystring)
         df = response.json()
@@ -24,85 +25,16 @@ def getMovies1(baseURL):
         films = df['results']
         finalDF = finalDF.append(films, ignore_index=True)
 
-
-    finalDF.to_csv('movies1.csv')
+    filename = 'movies'+str(pageNumber)+'.csv'
+    finalDF.to_csv(filename)
     print(finalDF)
-
-def getMovies2(baseURL):
-    finalDF = pd.DataFrame()
-
-    i = 1977
-    for i in range(1977, 2017):
-        querystring = {'api_key':'ddb02b46eef4bf31dc4e8bcbc0222a68',
-                    'primary_release_year':str(i),
-                    'sort_by':'revenue.desc',
-                    'language':'en-US',
-                    'page':'2'
-                    }
-
-        response = requests.get(baseURL, querystring)
-        df = response.json()
-
-        films = df['results']
-        finalDF = finalDF.append(films, ignore_index=True)
-
-
-    finalDF.to_csv('movies2.csv')
-    print(finalDF)
-
-
-def getMovies3(baseURL):
-    finalDF = pd.DataFrame()
-
-    i = 1977
-    for i in range(1977, 2017):
-        querystring = {'api_key':'ddb02b46eef4bf31dc4e8bcbc0222a68',
-                    'primary_release_year':str(i),
-                    'sort_by':'revenue.desc',
-                    'language':'en-US',
-                    'page':'3'
-                    }
-
-        response = requests.get(baseURL, querystring)
-        df = response.json()
-
-        films = df['results']
-        finalDF = finalDF.append(films, ignore_index=True)
-
-
-    finalDF.to_csv('movies3.csv')
-    print(finalDF)
-
-
-def getMovies4(baseURL):
-    finalDF = pd.DataFrame()
-
-    i = 1977
-    for i in range(1977, 2017):
-        querystring = {'api_key':'ddb02b46eef4bf31dc4e8bcbc0222a68',
-                    'primary_release_year':str(i),
-                    'sort_by':'revenue.desc',
-                    'language':'en-US',
-                    'page':'4'
-                    }
-
-        response = requests.get(baseURL, querystring)
-        df = response.json()
-
-        films = df['results']
-        finalDF = finalDF.append(films, ignore_index=True)
-
-
-    finalDF.to_csv('movies3.csv')
-    print(finalDF)
-
 
 
 def getGenres():
     genreDF = pd.DataFrame()
     baseURL = "https://api.themoviedb.org/3/genre/movie/list"
     queryString = {'api_key': 'ddb02b46eef4bf31dc4e8bcbc0222a68',
-                   'language':'en-US'}
+                   'language': 'en-US'}
     response = requests.get(baseURL, queryString)
     df = response.json()
 
@@ -111,6 +43,15 @@ def getGenres():
 
     genreDF.to_csv("movie_genres.csv")
     print(genreDF)
+
+
+def combineMovieFiles():
+    file_names = ["movies1.csv", "movies2.csv", "movies3.csv", "movies4.csv"]
+    # combine all files in the list
+    combined_csv = pd.concat([pd.read_csv(f) for f in all_filenames])
+    # export to csv
+    combined_csv.to_csv("combined_csv.csv", index=False, encoding='utf-8-sig')
+
 
 def main():
 
@@ -123,13 +64,11 @@ def main():
     # revenue from 1977 to 2016 and so on and so forth for movies3.csv and movies4.csv. In order to run please comment
     # and uncomment the following methods in order as necessary to run the data:
     baseURL = "https://api.themoviedb.org/3/discover/movie"
-    getMovies1(baseURL)
-    # getMovies2(baseURL)
-    # getMovies3(baseURL)
-    # getMovies4(baseURL)
+    getMovies(baseURL, 1)
 
-    #this method gets the text name of the genres that the genre ids in the movie csv refer to:
-    getGenres()
+    # this method gets the text name of the genres that the genre ids in the movie csv refer to:
+    # getGenres()
+
 
 if __name__ == "__main__":
     main()
