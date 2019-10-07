@@ -46,9 +46,35 @@ def getGenres():
 
 
 def combineMovieFiles():
+    # due to how we have to call the api, we will just combine all the data we call and add them together
     file_names = ["movies1.csv", "movies2.csv", "movies3.csv", "movies4.csv"]
     combined_csv = pd.concat([pd.read_csv(f) for f in file_names])
     combined_csv.to_csv("all_movies.csv", index=False, encoding='utf-8-sig')
+
+
+def cleanData():
+    # this is where we call all the cleaning data functions
+    # first open up the csv file we are working with and pass that into the functions
+    myDataFrame = readFile("all_movies.csv", ",")
+    myDataFrame = removeEmptyOverviewRows(myDataFrame)
+    # now take the dataframe and rewrite it into the csv file
+    myDataFrame.to_csv("all_movies.csv")
+
+
+def readFile(file, seperator):
+    # func to read the contents of the file and return a pandas dataframe
+
+    # Read in data directly into pandas
+    myDataFrame = pd.read_csv(
+        file, sep=seperator, encoding='latin1')
+
+    return myDataFrame
+
+
+def removeEmptyOverviewRows(myDataFrame):
+
+    myDataFrame = myDataFrame[~myDataFrame['overview'].isnull()]
+    return myDataFrame
 
 
 def main():
@@ -64,7 +90,7 @@ def main():
     baseURL = "https://api.themoviedb.org/3/discover/movie"
     #getMovies(baseURL, 1)
 
-    combineMovieFiles()
+    cleanData()
 
     # this method gets the text name of the genres that the genre ids in the movie csv refer to:
     # getGenres()
