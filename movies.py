@@ -47,10 +47,8 @@ def getGenres():
 
 def combineMovieFiles():
     file_names = ["movies1.csv", "movies2.csv", "movies3.csv", "movies4.csv"]
-    # combine all files in the list
-    combined_csv = pd.concat([pd.read_csv(f) for f in all_filenames])
-    # export to csv
-    combined_csv.to_csv("combined_csv.csv", index=False, encoding='utf-8-sig')
+    combined_csv = pd.concat([pd.read_csv(f) for f in file_names])
+    combined_csv.to_csv("all_movies.csv", index=False, encoding='utf-8-sig')
 
 
 def main():
@@ -64,7 +62,9 @@ def main():
     # revenue from 1977 to 2016 and so on and so forth for movies3.csv and movies4.csv. In order to run please comment
     # and uncomment the following methods in order as necessary to run the data:
     baseURL = "https://api.themoviedb.org/3/discover/movie"
-    getMovies(baseURL, 1)
+    #getMovies(baseURL, 1)
+
+    combineMovieFiles()
 
     # this method gets the text name of the genres that the genre ids in the movie csv refer to:
     # getGenres()
