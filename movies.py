@@ -57,8 +57,10 @@ def cleanData():
     # first open up the csv file we are working with and pass that into the functions
     myDataFrame = readFile("all_movies.csv", ",")
     myDataFrame = removeEmptyOverviewRows(myDataFrame)
+    myDataFrame.drop(columns=['backdrop_path', 'poster_path'])
     # now take the dataframe and rewrite it into the csv file
     myDataFrame.to_csv("all_movies.csv")
+
 
 
 def readFile(file, seperator):
