@@ -1,0 +1,27 @@
+For n_clusters = 5
+
+cluster_labels: [3 1 3 ... 2 0 0]
+
+
+ The average silhouette_score is : 0.26812810060282816
+
+*************
+
+For n_clusters = 10
+
+cluster_labels: [1 9 1 ... 3 5 5]
+
+
+ The average silhouette_score is : 0.22678437139624727
+
+*************
+
+For n_clusters = 15
+
+cluster_labels: [ 2  4  3 ...  1 11 11]
+
+
+ The average silhouette_score is : 0.20983572299771894
+
+*************
+

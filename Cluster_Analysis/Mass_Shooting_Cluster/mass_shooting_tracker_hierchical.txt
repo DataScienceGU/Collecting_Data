@@ -1,0 +1,135 @@
+For n_clusters = 5
+
+cluster_labels: [1 0 0 ... 4 4 3]
+
+
+ The average silhouette_score is : 0.40613748519795784
+
+*************
+
+For n_clusters = 10
+
+cluster_labels: [7 5 5 ... 1 1 0]
+
+
+ The average silhouette_score is : 0.35869806600227233
+
+*************
+
+For n_clusters = 15
+
+cluster_labels: [ 3  5  5 ... 14 10 13]
+
+
+ The average silhouette_score is : 0.39361991617230474
+
+*************
+
+For n_clusters = 5
+
+cluster_labels: [1 0 0 ... 4 4 3]
+
+
+ The average silhouette_score is : 0.40613748519795784
+
+*************
+
+For n_clusters = 10
+
+cluster_labels: [7 5 5 ... 1 1 0]
+
+
+ The average silhouette_score is : 0.35869806600227233
+
+*************
+
+For n_clusters = 15
+
+cluster_labels: [ 3  5  5 ... 14 10 13]
+
+
+ The average silhouette_score is : 0.39361991617230474
+
+*************
+
+For n_clusters = 5
+
+cluster_labels: [1 0 0 ... 4 4 3]
+
+
+ The average silhouette_score is : 0.40613748519795784
+
+*************
+
+For n_clusters = 10
+
+cluster_labels: [7 5 5 ... 1 1 0]
+
+
+ The average silhouette_score is : 0.35869806600227233
+
+*************
+
+For n_clusters = 15
+
+cluster_labels: [ 3  5  5 ... 14 10 13]
+
+
+ The average silhouette_score is : 0.39361991617230474
+
+*************
+
+For n_clusters = 5
+
+cluster_labels: [1 0 0 ... 4 4 3]
+
+
+ The average silhouette_score is : 0.40613748519795784
+
+*************
+
+For n_clusters = 10
+
+cluster_labels: [7 5 5 ... 1 1 0]
+
+
+ The average silhouette_score is : 0.35869806600227233
+
+*************
+
+For n_clusters = 15
+
+cluster_labels: [ 3  5  5 ... 14 10 13]
+
+
+ The average silhouette_score is : 0.39361991617230474
+
+*************
+
+For n_clusters = 5
+
+cluster_labels: [1 0 0 ... 4 4 3]
+
+
+ The average silhouette_score is : 0.40613748519795784
+
+*************
+
+For n_clusters = 10
+
+cluster_labels: [7 5 5 ... 1 1 0]
+
+
+ The average silhouette_score is : 0.35869806600227233
+
+*************
+
+For n_clusters = 15
+
+cluster_labels: [ 3  5  5 ... 14 10 13]
+
+
+ The average silhouette_score is : 0.39361991617230474
+
+*************
+

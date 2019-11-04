@@ -1,0 +1,18 @@
+For min_samples = 5
+
+ The average silhouette_score is : 0.5149299293738566
+
+*************
+
+For min_samples = 10
+
+ The average silhouette_score is : 0.5249170288199313
+
+*************
+
+For min_samples = 20
+
+ The average silhouette_score is : 0.5249170288199313
+
+*************
+

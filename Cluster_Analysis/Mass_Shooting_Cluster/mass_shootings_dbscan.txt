@@ -1,0 +1,90 @@
+For min_samples = 5
+
+ The average silhouette_score is : 0.41228316475437166
+
+*************
+
+For min_samples = 10
+
+ The average silhouette_score is : 0.26723999685226646
+
+*************
+
+For min_samples = 20
+
+ The average silhouette_score is : 0.18543556371191353
+
+*************
+
+For min_samples = 5
+
+ The average silhouette_score is : 0.41228316475437166
+
+*************
+
+For min_samples = 10
+
+ The average silhouette_score is : 0.26723999685226646
+
+*************
+
+For min_samples = 20
+
+ The average silhouette_score is : 0.18543556371191353
+
+*************
+
+For min_samples = 5
+
+ The average silhouette_score is : 0.41228316475437166
+
+*************
+
+For min_samples = 10
+
+ The average silhouette_score is : 0.26723999685226646
+
+*************
+
+For min_samples = 20
+
+ The average silhouette_score is : 0.18543556371191353
+
+*************
+
+For min_samples = 5
+
+ The average silhouette_score is : 0.41228316475437166
+
+*************
+
+For min_samples = 10
+
+ The average silhouette_score is : 0.26723999685226646
+
+*************
+
+For min_samples = 20
+
+ The average silhouette_score is : 0.18543556371191353
+
+*************
+
+For min_samples = 5
+
+ The average silhouette_score is : 0.41228316475437166
+
+*************
+
+For min_samples = 10
+
+ The average silhouette_score is : 0.26723999685226646
+
+*************
+
+For min_samples = 20
+
+ The average silhouette_score is : 0.18543556371191353
+
+*************
+
