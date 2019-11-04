@@ -1,7 +1,7 @@
 from apyori import apriori
 from apyori import dump_as_json
 # http://rasbt.github.io/mlxtend/user_guide/frequent_patterns/apriori/
-#from mlxtend.frequent_patterns import apriori
+# from mlxtend.frequent_patterns import apriori
 from mlxtend.preprocessing import TransactionEncoder
 import pandas as pd
 import numpy as np
@@ -27,19 +27,23 @@ def removeBrackets(myDataFrame):
     # remove brackets from the data
     myDataFrame['genre_ids'] = myDataFrame['genre_ids'].apply(
         lambda x: (
-            x.strip('['))
-    )
-    myDataFrame['genre_ids'] = myDataFrame['genre_ids'].apply(
-        lambda x: (
-            x.strip(']'))
+            removeLeftAndRightBrackets(x))
     )
     return myDataFrame
 
 
-def tidy_split(df, column, sep='|', keep=False):
-    """
+def removeLeftAndRightBrackets(x):
+    x = x.strip('[')
+    x = x.strip(']')
+    return x
 
-    FROM HERE: https://stackoverflow.com/questions/12680754/split-explode-pandas-dataframe-string-entry-to-separate-rows/40449726#40449726
+
+def tidy_split(df, column, sep=',', keep=False):
+    """
+    takes in a dataframe and a column name consisting of a list. will return the dataframe with
+    that column name being separted so that each item in the list has its own row
+
+    method found here: https://stackoverflow.com/questions/12680754/split-explode-pandas-dataframe-string-entry-to-separate-rows/40449726#40449726
 
 
     Split the values of a column and expand so the new DataFrame has one split
@@ -77,50 +81,41 @@ def tidy_split(df, column, sep='|', keep=False):
     return new_df
 
 
-def main():
+def toNumericForGenreIds(myDataFrame):
+    # turn the the genre_id data numeric instead of strings
+    myDataFrame['genre_ids'] = pd.to_numeric(
+        myDataFrame['genre_ids'], errors='coerce')
+    return myDataFrame
+
+
+def prepareForApriori():
+    # will run specific functions to prepare the data to run the apriori
+    # function on it
     filename = "all_movies.csv"
     myDataFrame = readData(filename)
-    vals = myDataFrame[['genre_ids']].values
     myDataFrame = popularityAsBinary(myDataFrame)
     myDataFrame = myDataFrame[['genre_ids', 'popular_1_or_0']]
     newDataFrame = tidy_split(myDataFrame, 'genre_ids', sep=',')
     newDataFrame = removeBrackets(newDataFrame)
-    newDataFrame['genre_ids'] = pd.to_numeric(
-        newDataFrame['genre_ids'], errors='coerce')
-    # print(newDataFrame.values)
-    # newDataFrame = newDataFrame.head(100)
-    results = list(apriori(newDataFrame.values, min_support=0.0001))
+    newDataFrame = toNumericForGenreIds(newDataFrame)
+    return newDataFrame
+
+
+def runAprioriAlg(myDataFrame, minSupport):
+    # runs the apriori algorithm based on the min_support passed in and
+    # returns the result
+
+    # have min_lift equal to a number barely over 1 so that it looks at
+    # only itemsets with more than 1 item
+    results = list(apriori(myDataFrame.values,
+                           min_support=minSupport, min_lift=1.000001))
+
     print(results)
-    # newDataFrame = tidy_split(myDataFrame, 'genre_ids', sep=',')
-    # print(myDataFrame)
-    # newDataFrame = removeBrackets(newDataFrame)
-    # print(newDataFrame)
-    # # results = list(apriori(myDataFrame))
-    # # print(results)
-    # newDataFrame['genre_ids'] = pd.to_numeric(
-    #     newDataFrame['genre_ids'], errors='coerce')
-    # print(newDataFrame.values)
-    # newDataFrame = newDataFrame.head(10)
-    # te = TransactionEncoder()
-    # te_ary = te.fit(newDataFrame).transform(newDataFrame)
-    # df = pd.DataFrame(te_ary, columns=te.columns_)
-    # print(df)
-    # results = apriori(df, min_support=0.0, use_colnames=True)
-    # results.sort_values(by=['support'])
-    # print(results)
-    # print("\n\n")
-    transactions = [
-        ['beer', 'nuts'],
-        ['beer', 'cheese'],
-    ]
-    print("\n\n\n")
-    results = list(apriori(transactions))
-    print(results)
-    # te = TransactionEncoder()
-    # te_ary = te.fit(vals).transform(vals)
-    # df = pd.DataFrame(te_ary, columns=te.columns_)
-    # results = apriori(df, min_support=0.6, use_colnames=True)
-    # print(results)
+
+
+def main():
+    myDataFrame = prepareForApriori()
+    runAprioriAlg(myDataFrame, 0.05)
 
 
 if __name__ == "__main__":
