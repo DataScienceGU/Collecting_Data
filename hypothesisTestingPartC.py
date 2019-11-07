@@ -16,10 +16,18 @@ def readData(filename):
 def getListOfViolentGenres():
     # Types of movies that are violent:
     # these types of movies tend to include more violence than other genres
-    # decided to not include drama and science fiction here
-    # NEED TO EXPLAIN WHY WE CHOSE EACH OF THESE GENRES AS THE VIOLENT ONES
-    # Action(28), adventure(12), horror(27), thriller(53), western(37), crime (80)
-    return [28, 12, 27, 53, 37, 878, 80]
+    # Action(28), adventure(12), horror(27), thriller(53), western(37), crime (80), war(10752)
+    return [28, 12, 27, 53, 37, 878, 80, 10752]
+    # return [27, 53]
+    # return [28]
+
+
+def getListOfViolentWords():
+    # possible violent words
+    violent_words = ["gun", "shoot", "murder", "war", "kill", "pistol", "massacre",
+                     "rampage", "violent", "hunt", "mafia", "attack", "police", "assassin", "crime"]
+    # violent_words = ["gun"]
+    return violent_words
 
 
 def findViolentProportionByMonth(myDataFrame):
@@ -75,7 +83,7 @@ def convertStringIntoListForGenres(myDataFrame):
     return myDataFrame
 
 
-def createBinaryViolentMovieColumn(myDataFrame, listOfViolentGenres):
+def createBinaryViolentMovieColumnByGenre(myDataFrame, listOfViolentGenres):
     # will create a new column that is 1 if movie has a violent genre and 0 otherwise
     myDataFrame['violent_1_or_0'] = myDataFrame['genre_ids'].apply(
         lambda x: 1 if doSomething(x, listOfViolentGenres) else 0)
@@ -98,31 +106,67 @@ def doSomething(List1, List2):
 
 
 def returnTwoSetsOfFloatDataByDict(proportionDict):
+    # takes in a dict, sorts by key, returns two lists (keys and values),
+    # and converts them to floats for correlation test
     sortedListOfYears = returnSortedListOfYears(copy.copy(proportionDict))
+    print(sortedListOfYears)
     sortedListOfProportions = returnSortedListOfProportions(
         copy.copy(proportionDict))
-    print(sortedListOfProportions)
     sortedListOfYears = list(map(float, sortedListOfYears))
     sortedListOfProportions = list(map(float, sortedListOfProportions))
     return sortedListOfYears, sortedListOfProportions
 
 
-def main():
-    myDataFrame = readData('all_movies.csv')
-    myDataFrame = convertStringIntoListForGenres(myDataFrame)
-    # myDataFrame = myDataFrame.head()
-    print(myDataFrame['genre_ids'])
-    listOfViolentGenres = getListOfViolentGenres()
-    myDataFrame = createBinaryViolentMovieColumn(
-        myDataFrame, listOfViolentGenres)
-    print(myDataFrame)
-    myDataFrame = createMonthYearColumn(myDataFrame)
-    print(myDataFrame)
+def createBinaryViolentMovieColumnByOverview(myDataFrame, listOfViolentWords):
+    # will hold truth value if violent or not.
+    contains_violence = []
+
+    for movie in myDataFrame['overview']:
+        violent = 0
+        for word in listOfViolentWords:
+            if word in movie:
+                violent = 1
+
+        contains_violence.append(violent)
+
+    # add the column into the dataframe
+    myDataFrame['violent_1_or_0'] = contains_violence
+    return myDataFrame
+
+
+def runCorrelationOnData(myDataFrame):
+    # will prepare data for a t-test / correlation
+    # the listToCheck is the list that will define the binary violent column
     findViolentProportionByMonth(myDataFrame)
     proportionDict = findViolentProportionByMonth(myDataFrame)
     sortedListOfYears, sortedListOfProportions = returnTwoSetsOfFloatDataByDict(
         proportionDict)
     corr, p = pearsonr(sortedListOfYears, sortedListOfProportions)
+    return corr, p
+
+
+def prepareDataFrame():
+    # will read the data and prepare the data for running correlation tests
+    myDataFrame = readData('all_movies.csv')
+    myDataFrame = convertStringIntoListForGenres(myDataFrame)
+    myDataFrame = createMonthYearColumn(myDataFrame)
+    return myDataFrame
+
+
+def main():
+    # runs a linear correlation test for the proportion of violent movies over
+    # time by genre and then by looking at violent words in the overview description
+    myDataFrame = prepareDataFrame()
+    listOfViolentGenres = getListOfViolentGenres()
+    myDataFrameGenre = createBinaryViolentMovieColumnByGenre(
+        myDataFrame, listOfViolentGenres)
+    corr, p = runCorrelationOnData(myDataFrameGenre)
+    print(corr)
+    print(p)
+    listOfViolentWords = getListOfViolentWords()
+    myDataFrameOverview = createBinaryViolentMovieColumnByOverview(
+        myDataFrame, listOfViolentWords)
+    corr, p = runCorrelationOnData(myDataFrameOverview)
     print(corr)
     print(p)
 
