@@ -1,0 +1,48 @@
+For n_clusters = 5
+
+n_leaves: 2752
+
+
+n_connected_components: 1
+
+
+The average silhouette_score is : 0.40613748519795784
+
+*************
+
+For n_clusters = 10
+
+n_leaves: 2752
+
+
+n_connected_components: 1
+
+
+The average silhouette_score is : 0.35869806600227233
+
+*************
+
+For n_clusters = 15
+
+n_leaves: 2752
+
+
+n_connected_components: 1
+
+
+The average silhouette_score is : 0.39361991617230474
+
+*************
+
+For n_clusters = 20
+
+n_leaves: 2752
+
+
+n_connected_components: 1
+
+
+The average silhouette_score is : 0.39011946922669316
+
+*************
+

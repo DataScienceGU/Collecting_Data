@@ -1,0 +1,36 @@
+For min_samples = 30
+
+Estimated number of clusters: 1
+
+
+Estimated number of noise points: 55
+
+
+The average silhouette_score is : 0.10048617185573602
+
+*************
+
+For min_samples = 16
+
+Estimated number of clusters: 1
+
+
+Estimated number of noise points: 18
+
+
+The average silhouette_score is : 0.1984164567866159
+
+*************
+
+For min_samples = 9
+
+Estimated number of clusters: 1
+
+
+Estimated number of noise points: 6
+
+
+The average silhouette_score is : 0.3091571699049819
+
+*************
+
