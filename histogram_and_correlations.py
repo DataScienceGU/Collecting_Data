@@ -318,10 +318,9 @@ def hypothesis_test_movies_and_shooting(movie_and_shooting):
     plt.title("Linear Regression on # Violent Movies and # Shootings in the Same Month")
     plt.xlabel("# Violent Movies released in a month")
     plt.ylabel("# Shootings that month")
-    plt.savefig("linear_regression_violent_movies_shootings")
-
     plt.scatter(X, Y)
     plt.plot(X, Y_pred, color='red')
+    plt.savefig("linear_regression_violent_movies_shootings")
     plt.show()
     plt.clf()
     plt.close()
