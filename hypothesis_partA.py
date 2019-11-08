@@ -51,18 +51,9 @@ def binAges(myDataFrame):
     return myDataFrame
 
 
-def binTotalVictims(myDataFrame):
-    names = ['0-6', '6-15', '>15']
-    bins = [0, 6, 15, 10000]
-    # bins the total victims into 3 equal width bins
-    myDataFrame['total_victims_binned'] = pd.cut(
-        myDataFrame['total_victims'], bins=bins, labels=names)
-    return myDataFrame
-
-
-def choose_features1(df):
+def choose_features1(df, classifier):
     # Select the columns/features to use for training data
-    df = pd.concat([df['injured'], df['fatalities'], df['date'], df['age_of_shooter_binned']],
+    df = pd.concat([df['injured'], df['fatalities'], df['date'], df[classifier]],
                    axis=1)
 
     df = extract_year(df)
@@ -70,7 +61,7 @@ def choose_features1(df):
     return df
 
 
-def choose_features2(df):
+def choose_features2(df, classifier):
     # Select the columns/features to use
     df = pd.concat([df['wounded'], df['killed'], df['date']],
                    axis=1)
@@ -80,7 +71,7 @@ def choose_features2(df):
 
     df = extract_year(df)
 
-    df["age_of_shooter_binned"] = ""
+    df[classifier] = ""
 
     return df
 
@@ -122,10 +113,9 @@ def main():
     training_data = getValsForGunDescription(training_data)
     training_data = changeMentalHealthVals(training_data)
     training_data = binAges(training_data)
-    training_data = binTotalVictims(training_data)
 
-    training_data = choose_features1(training_data)
-    test_data = choose_features2(test_data)
+    training_data = choose_features1(training_data, 'age_of_shooter_binned')
+    test_data = choose_features2(test_data, 'age_of_shooter_binned')
 
     # print(training_data[:20])
     # print(test_data)
@@ -147,9 +137,6 @@ def main():
     X_validate = test_value_array[:, 0:-1]
     Y_validate = test_value_array[:, -1]
 
-    test_size = 0.20
-    seed = 7
-
     # Setup 10-fold cross validation to estimate the accuracy of different models
     # Split data into 10 parts
     # Test options and evaluation metric
@@ -167,13 +154,14 @@ def main():
     models.append(('KNN', KNeighborsClassifier()))
     models.append(('CART', DecisionTreeClassifier()))
     models.append(('NB', GaussianNB()))
-    models.append(('RF', RandomForestClassifier()))
+    models.append(('RF', RandomForestClassifier(n_estimators=100)))
     models.append(('ADA', AdaBoostClassifier()))
 
     # Evaluate each model, add results to a results array,
     # Print the accuracy results (remember these are averages and std
     results = []
     names = []
+    seed = 7
     for name, model in models:
         kfold = KFold(n_splits=num_folds, random_state=seed, shuffle=False)
         cv_results = cross_val_score(
@@ -183,20 +171,20 @@ def main():
         msg = "%s: %f (%f)" % (name, cv_results.mean(), cv_results.std())
         print(msg)
 
-    # ######################################################
-    # # For the best model (KNN), see how well it does on the
-    # # validation test
-    # ######################################################
-    # # Make predictions on validation dataset
-    # knn = KNeighborsClassifier()
-    # knn.fit(X_train, Y_train)
-    # predictions = knn.predict(X_validate)
+    ######################################################
+    # For the best model (KNN), see how well it does on the
+    # validation test
+    ######################################################
+    # Make predictions on validation dataset
+    knn = KNeighborsClassifier()
+    knn.fit(X_train, Y_train)
+    predictions = knn.predict(X_validate)
 
-    # print()
-    # print('Accuracy score for KNN')
-    # print("{0:.6f}".format(accuracy_score(Y_validate, predictions)))
-    # print(confusion_matrix(Y_validate, predictions))
-    # print(classification_report(Y_validate, predictions))
+    print()
+    print('Accuracy score for KNN')
+    print("{0:.6f}".format(accuracy_score(Y_validate, predictions)))
+    print(confusion_matrix(Y_validate, predictions))
+    print(classification_report(Y_validate, predictions))
 
     # ######################################################
     # # For the model (Decision Tree), see how well it does on the
@@ -206,6 +194,7 @@ def main():
     # dectree = DecisionTreeClassifier()
     # dectree.fit(X_train, Y_train)
     # predictions = dectree.predict(X_validate)
+
 
     # print()
     # print('Accuracy score for tree')
