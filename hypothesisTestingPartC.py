@@ -109,7 +109,6 @@ def returnTwoSetsOfFloatDataByDict(proportionDict):
     # takes in a dict, sorts by key, returns two lists (keys and values),
     # and converts them to floats for correlation test
     sortedListOfYears = returnSortedListOfYears(copy.copy(proportionDict))
-    print(sortedListOfYears)
     sortedListOfProportions = returnSortedListOfProportions(
         copy.copy(proportionDict))
     sortedListOfYears = list(map(float, sortedListOfYears))
