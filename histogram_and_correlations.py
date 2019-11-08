@@ -3,6 +3,7 @@ import pandas as pd
 import pylab as pl
 import datetime
 import numpy as np
+from sklearn.linear_model import LinearRegression
 from pandas.plotting import scatter_matrix
 from scipy import stats
 import matplotlib.pyplot as plt
@@ -18,8 +19,6 @@ def load_gun_sheets():
     filenames = glob.glob(path+"/*.csv")
     filenames.sort()
 
-    print(filenames)
-
     dataframes = []
 
     for filename in filenames:
@@ -31,7 +30,7 @@ def load_gun_sheets():
 
     return all_shooting_data
 
-def getGenres():
+def get_genres():
     genreDF = pd.DataFrame()
     baseURL = "https://api.themoviedb.org/3/genre/movie/list"
     queryString = {'api_key': 'ddb02b46eef4bf31dc4e8bcbc0222a68',
@@ -43,6 +42,7 @@ def getGenres():
     genreDF = genreDF.append(genres, ignore_index=True)
 
     genreDF.to_csv("movie_genres.csv")
+    print("Index of Genres:")
     print(genreDF)
     return genreDF
 
@@ -51,7 +51,7 @@ def shooting_histograms(shooting_data):
     #i figured day by day was too granular.
     #Also formatted it to be the same as the dates in the release date column in movie data base.
     shooting_data['date'] = shooting_data['date'].astype('str')
-    print(shooting_data['date'].dtype)
+
     month_year = []
     for date in shooting_data['date']:
         month = 0;
@@ -108,7 +108,7 @@ def movie_histograms(movie_data):
         contains_violence.append(violent)
         violent_words_frequency.append(frequency)
 
-    #loading the presence of key words into data frame
+    #loading the frequency of violent words in descriptions, and violent movies overall into 2 diff columns in dataframe
     movie_data['violent_words'] = violent_words_frequency
     print("Frequency of movies with #s of violent words: ")
     print(movie_data['violent_words'].value_counts())
@@ -118,24 +118,24 @@ def movie_histograms(movie_data):
 
     plot_histogram(movie_data['violent_words'], "violent_words", "# of violent words per movie description")
 
-    #the below code handles processing and plotting movie genre data:
+    #the below code handles processing and plotting movie genre data
     #turning the string of movie ids into a list for processing
     for movie_genre in movie_data['genre_ids']:
         ast.literal_eval(movie_genre)
 
+    #We have to make a new row for each genre in the list of genre ids per record so we can count the frequency
+    #so I save and return the original version for other processing.
     copy_unseparated_movies = movie_data
-    print("UNSEPARATED: ")
-    print(copy_unseparated_movies)
 
     #splitting the list of genre ids into separate rows to analyze frequency:
     movie_data = tidy_split(movie_data, "genre_ids")
     movie_data = removeBrackets(movie_data)
+
+    #printing to check properly split
     print(movie_data.head(n=5))
 
-
-
     #plotting and showing genre frequencies:
-    print("Genres: ")
+    print("Frequencies of Genres: ")
     print(movie_data['genre_ids'].value_counts())
     plot_histogram(movie_data['genre_ids'], "genres", "Frequencies of Genres")
     return copy_unseparated_movies
@@ -201,9 +201,6 @@ def tidy_split(df, column, sep=',', keep=False):
 
 def plot_scatterplots(shooting_data, movie_data):
     #going to plot and correlate three quantitative variables: # violent movies per month, #shootings per month
-    #
-    #need to process movie release date by month and year
-    print(shooting_data)
 
     #returns the month/year and # of violent movies released that month in a DF from 2013-2016 (to match shootings)
     movie_data_trunc = process_movie_date(movie_data)
@@ -212,18 +209,12 @@ def plot_scatterplots(shooting_data, movie_data):
     shooting_data_consolidated = pd.DataFrame(list(shooting_data['month_year'].value_counts().items()),
                                               columns = ['date', 'shootings'])
     both_data_frequencies = pd.merge(shooting_data_consolidated, movie_data_trunc, on='date', how="left")
-    print(both_data_frequencies)
-
     del both_data_frequencies['date']
 
     #some months no violent movies were released, so replace with 0
     both_data_frequencies = both_data_frequencies.fillna(0)
-    # min_max_scaler = preprocessing.MinMaxScaler()
-    # cols = both_data_frequencies.columns
-    # np_scaled = min_max_scaler.fit_transform(both_data_frequencies)
-    # both_data_normalized = pd.DataFrame(np_scaled, columns=cols)
-    # print(both_data_normalized)
-    # print(both_data_frequencies)
+    print(both_data_frequencies)
+
     scatterplot(both_data_frequencies,'num_violent_movies', 'shootings',
                 "Correlation Between # of Violent Movies Released and Shootings in Same Month",
                 "# violent movies released in the month", "#shootings in the month","correlation_movies_shootings")
@@ -234,14 +225,8 @@ def plot_scatterplots(shooting_data, movie_data):
                 "Correlation Between # of Movies in Sensational Genres Released and # of Violent Genres",
                 "# movies in sensational genres released per month", "#violent movies in the month",
                 "correlation_movie_genre_violent_movie")
-    # both_data_normalized.plot(x=, style='o')
-    # plt.title("Correlation Between # of Violent Movies Released and Shootings in Same Month")
-    # plt.xlabel("# violent movies released in the month")
-    # plt.ylabel("# shootings in the month")
-    # plt.savefig("correlation_movies_shootings")
-    # plt.show()
 
-    # print(stats.pearsonr(both_data_normalized['shootings'], both_data_normalized['num_violent_movies']))
+    return both_data_frequencies
 
 def scatterplot(both_data_frequencies, xaxis, yaxis, title, xlabel, ylabel, filename):
     both_data_frequencies.plot(x=xaxis, y=yaxis, style='o')
@@ -261,14 +246,13 @@ def process_movie_date(movie_data):
     #formatting the release dates by month and year
     for date in movie_data['release_date']:
         datelist = date.split('-')
-        # print(datelist)
         month_year.append((datelist[1] + '/' + datelist[0]))
 
     movie_data['month_year'] = month_year
     sensational_genre_names = ['Action', 'Adventure', 'Horror', 'Thriller', 'Drama', 'Western', 'Science Fiction']
     sensational_genre_ids = []
 
-    genre_guide = getGenres()
+    genre_guide = get_genres()
     for index, genre in genre_guide.iterrows():
         if genre['name'] in sensational_genre_names:
             sensational_genre_ids.append(str(genre['id']))
@@ -276,7 +260,7 @@ def process_movie_date(movie_data):
     print("GENRES LOOKING FOR: ")
     print(sensational_genre_ids)
 
-    #pulling out only relevant movies(violent, or sensational genre) from dataframe:
+    #pulling out only relevant movies(violent, or belong to a sensational genre) from dataframe:
     violent_movies_per_month = {}
     sensational_genres_per_month = {}
     for index, movie in movie_data.iterrows():
@@ -288,11 +272,8 @@ def process_movie_date(movie_data):
         for genre in sensational_genre_ids:
             if str(genre) in movie['genre_ids']:
                 if movie['month_year'] in sensational_genres_per_month:
-                    print(genre)
                     sensational_genres_per_month[movie['month_year']] += 1
                 else:
-                    print(movie['month_year'])
-                    print(genre)
                     sensational_genres_per_month[movie['month_year']] = 1
 
     print("SENSATIONAL MOVIE FREQUENCY: ")
@@ -301,37 +282,72 @@ def process_movie_date(movie_data):
 
     remove_movies_before_shootings(violent_movies_per_month)
     remove_movies_before_shootings(sensational_genres_per_month)
-    # print(violent_movies_per_month)
     movie_data_violence = pd.DataFrame(list(violent_movies_per_month.items()), columns = ['date', 'num_violent_movies'])
     movie_data_genre = pd.DataFrame(list(sensational_genres_per_month.items()), columns = ['date', 'num_movies_in_violent_genres'])
-    movie_data_2013_on =  pd.merge(movie_data_violence, movie_data_genre, on='date', how="left")
+    movie_data_2013_on =  pd.merge(movie_data_violence, movie_data_genre, on='date', how = 'outer')
+
+    #printing merged data:
     print(movie_data_2013_on)
     return movie_data_2013_on
 
 def remove_movies_before_shootings(violent_movies_per_month):
+    #removes movies before the mass shooting.
     list_keys = list(violent_movies_per_month.keys())
     list_keys.sort(key=lambda x: datetime.datetime.strptime(x, '%m/%Y'))
-    print(list_keys)
     for key in list_keys:
         if (key=="01/2013"):
             return
         else:
             del violent_movies_per_month[key]
 
+def hypothesis_test_movies_and_shooting(movie_and_shooting):
+    #source for linear regression method: https://towardsdatascience.com/linear-regression-in-6-lines-of-python-5e1d0cd05b8d
+
+    #convert to numpy array
+    X = movie_and_shooting.iloc[:, 1].values.reshape(-1, 1)
+    Y = movie_and_shooting.iloc[:, 0].values.reshape(-1, 1)
+
+    #creating model
+    linear_regressor = LinearRegression()
+    linear_regressor.fit(X, Y)  # perform linear regression
+    Y_pred = linear_regressor.predict(X)  # make predictions
+    print("Linear Model Coefficient: ")
+    print(linear_regressor.coef_)
 
 
+    plt.title("Linear Regression on # Violent Movies and # Shootings in the Same Month")
+    plt.xlabel("# Violent Movies released in a month")
+    plt.ylabel("# Shootings that month")
+    plt.savefig("linear_regression_violent_movies_shootings")
+
+    plt.scatter(X, Y)
+    plt.plot(X, Y_pred, color='red')
+    plt.show()
+    plt.clf()
+    plt.close()
 
 def main():
+    #loading movie and shooting data into two dataframes
     shooting_data = load_gun_sheets()
     movie_data = pd.read_csv("all_movies.csv")
+
+    #Max values for killed and wounded in shooting history:
     print(shooting_data)
     print("killed max: ")
     print(shooting_data['killed'].max())
     print("wounded max: ")
     print(shooting_data['wounded'].max())
+
+    #show histograms for shooting_data (Num killed per shooting, num wounded per shooting,
+    # and frequency of shootings month over month)
     shooting_histograms(shooting_data)
+
+    #show histograms for movie data (# of movies identified to be violent, # of violent words per description,
+    # and frequency of movies based on genres
+    # genres are encoded by ids given by our data source, which I pull in get_genres
     movie_data_unseperated = movie_histograms(movie_data)
-    plot_scatterplots(shooting_data, movie_data_unseperated)
+    movie_and_shooting = plot_scatterplots(shooting_data, movie_data_unseperated)
+    hypothesis_test_movies_and_shooting(movie_and_shooting)
 
 
 
