@@ -86,6 +86,7 @@ def extract_year(df):
 
 
 def main():
+    # Filenames
     training_data = pd.read_csv("mass_shootings.csv")
     test_data = pd.read_csv('mass_shooting_tracker_2013.csv',
                             sep=',', encoding='latin1')
@@ -102,6 +103,8 @@ def main():
     temp6 = pd.read_csv('mass_shooting_tracker_2019.csv',
                         sep=',', encoding='latin1')
 
+    save_name = 'mass_shooting_predictions.csv'
+
     # Combine dataframes for extra shooting data
     test_data = test_data.append(temp1)
     test_data = test_data.append(temp2)
@@ -110,26 +113,35 @@ def main():
     test_data = test_data.append(temp5)
     test_data = test_data.append(temp6)
 
+    test_data_temp = test_data
+
     training_data = getValsForGunDescription(training_data)
     training_data = changeMentalHealthVals(training_data)
     training_data = binAges(training_data)
 
-    training_data = choose_features1(training_data, 'age_of_shooter_binned')
-    test_data = choose_features2(test_data, 'age_of_shooter_binned')
+    # README: Here we can choose which classifier to predict, uncomment/comment the lines that we
+    # want to predict
 
-    # print(training_data[:20])
-    # print(test_data)
+    # training_data = choose_features1(training_data, 'age_of_shooter_binned')
+    # test_data_temp = choose_features2(test_data_temp, 'age_of_shooter_binned')
+
+    training_data = choose_features1(
+        training_data, 'auto_or_semiauto_or_rifle')
+    print(training_data)
+    test_data_temp = choose_features2(test_data, 'auto_or_semiauto_or_rifle')
+    print(test_data_temp)
+
+    # training_data = choose_features1(
+    #     training_data, 'has_mental_health_issues')
+    # test_data_temp = choose_features2(
+    #     test_data, 'has_mental_health_issues')
 
     ######################################################
     # Evaluate algorithms
     ######################################################
 
-    # Separate training and final validation data set. First remove class
-    # label from data (X). Setup target class (Y)
-    # Then make the validation set 20% of the entire
-    # set of labeled data (X_validate, Y_validate)
     training_value_array = training_data.values
-    test_value_array = test_data.values
+    test_value_array = test_data_temp.values
 
     X_train = training_value_array[:, 0:-1]
     preprocessing.normalize(X_train)
@@ -141,7 +153,6 @@ def main():
     # Split data into 10 parts
     # Test options and evaluation metric
     num_folds = 10
-    num_instances = len(X_train)
     seed = 7
     scoring = 'accuracy'
 
@@ -171,45 +182,22 @@ def main():
         msg = "%s: %f (%f)" % (name, cv_results.mean(), cv_results.std())
         print(msg)
 
-    ######################################################
-    # For the best model (KNN), see how well it does on the
-    # validation test
-    ######################################################
-    # Make predictions on validation dataset
-    knn = KNeighborsClassifier()
-    knn.fit(X_train, Y_train)
-    predictions = knn.predict(X_validate)
+    #################################################################
+    # Use the best model (Random Forest), to make predictions on 3
+    # different classifiers:
+    #################################################################
 
-    print()
-    print('Accuracy score for KNN')
-    print("{0:.6f}".format(accuracy_score(Y_validate, predictions)))
-    print(confusion_matrix(Y_validate, predictions))
-    print(classification_report(Y_validate, predictions))
+    rf = RandomForestClassifier(n_estimators=100)
+    rf.fit(X_train, Y_train)
+    predictions = rf.predict(X_validate)
 
-    # ######################################################
-    # # For the model (Decision Tree), see how well it does on the
-    # # validation test
-    # ######################################################
-    # # Make predictions on validation dataset
-    # dectree = DecisionTreeClassifier()
-    # dectree.fit(X_train, Y_train)
-    # predictions = dectree.predict(X_validate)
+    # Comment/uncomment the classifier we want to test
+    # test_data['age_of_shooter_binned'] = predictions
+    test_data['auto_or_semiauto_or_rifle'] = predictions
+    # test_data['has_mental_health_issues'] = predictions
+
+    test_data.to_csv(save_name, encoding='utf-8', index=False)
 
 
-    # print()
-    # print('Accuracy score for tree')
-    # print("{0:.6f}".format(accuracy_score(Y_validate, predictions)))
-    # print(confusion_matrix(Y_validate, predictions))
-    # print(classification_report(Y_validate, predictions))
-    # # Decision tree
-    # # http://scikit-learn.org/stable/modules/tree.html
-    # # A Lazy Learner Method (such as kNN)
-    # #  http://scikit-learn.org/stable/modules/neighbors.html
-    # # http://scikitlearn.org/stable/auto_examples/neighbors/plot_classification.html#sphx-glr-auto-examples-neighbors-plot-classification-py
-    # #  Naïve Bayes
-    # # http://scikit-learn.org/stable/modules/naive_bayes.html
-    # # Random Forest
-    # # http://scikitlearn.org/stable/modules/generated/sklearn.ensemble.RandomForestClassifier.html
-    # # ** add on one extra model**
 if __name__ == "__main__":
     main()
