@@ -1,5 +1,6 @@
 import pandas as pd
 import plotly.graph_objects as go
+import chart_studio.plotly as py
 
 
 def readData(filename):
@@ -91,6 +92,10 @@ def createGraph(movieData):
     print(genreCounts)
 
     fig = go.Figure(data=[go.Pie(labels=genreNames, values=genreCounts)])
+    fig.update_layout(
+        title='Genres of Top Box Office Movies',
+    )
+    py.plot(fig, filename="pie_chart_of_movie_genres.html", auto_open=True)
     fig.show()
 
 

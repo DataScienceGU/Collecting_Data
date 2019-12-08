@@ -3,6 +3,8 @@ import numpy as np
 import pprint
 import copy
 import plotly.graph_objects as go
+import chart_studio.plotly as py
+import chart_studio
 
 
 def readData(filename):
@@ -135,6 +137,11 @@ def createBinaryViolentMovieColumnByOverview(myDataFrame, listOfViolentWords):
 
 def createGraph(listOfYears, proportionsForGenreAll, proportionsForGenreAction, proportionsForOverview):
     # will prepare data for a t-test / correlation
+
+    # set up so that it will save to plotly account
+    chart_studio.tools.set_credentials_file(
+        username='mps114', api_key='quWnfkS81TFD5CzuIDYU')
+
     # the listToCheck is the list that will define the binary violent column
     fig = go.Figure(data=[
         go.Bar(name='All Violent Genres',
@@ -155,6 +162,10 @@ def createGraph(listOfYears, proportionsForGenreAll, proportionsForGenreAction, 
             title='year',
         ),
     )
+
+    # save graph to account
+    py.plot(fig, filename="violent_movies_over_time.html", auto_open=True)
+
     fig.show()
 
 

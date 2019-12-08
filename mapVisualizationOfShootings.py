@@ -1,5 +1,5 @@
 import plotly.graph_objects as go
-
+import chart_studio.plotly as py
 import pandas as pd
 
 
@@ -26,13 +26,15 @@ def createFigure(myDataFrame):
     )
 
     fig.update_layout(
-        title_text='2014 US city populations<br>(Click legend to toggle traces)',
+        title_text='Mass Shootings Corresponding to Total Victims Across the United States',
         showlegend=True,
         geo=dict(
             scope='usa',
             landcolor='rgb(217, 217, 217)',
         ),
     )
+
+    py.plot(fig, filename="map_of_mass_shootings.html", auto_open=True)
 
     fig.show()
 
