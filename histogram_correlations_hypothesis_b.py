@@ -92,7 +92,7 @@ def movie_histograms(movie_data):
 
     #list of words to look for in overview
     violent_words = ["gun", "shoot", "murder", "war", "kill", "pistol", "massacre", "rampage", "violent", "hunt", "mafia"
-                     , "attack", "police", "assassin", "crime"]
+                     , "attack", "police", "assassin", "crime", "gory", "outrage", "terrorism", "gore", "rage", ]
 
     #will hold truth value if violent or not.
     contains_violence = []
