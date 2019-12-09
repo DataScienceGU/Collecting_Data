@@ -15,13 +15,14 @@ def createFigure(myDataFrame):
         locationmode='USA-states',
         lon=myDataFrame['longitude'],
         lat=myDataFrame['latitude'],
-        # text=myDataFrame['text'],
+        text=myDataFrame['text'],
         marker=dict(
             size=myDataFrame['total_victims'],
             color=colors[0],
             line_color='rgb(40,40,40)',
             line_width=0.5,
             sizemode='area'),
+        name="mass shootings by location and number of victims"
     )
     )
 

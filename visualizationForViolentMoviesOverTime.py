@@ -177,6 +177,19 @@ def prepareDataFrame():
     return myDataFrame
 
 
+def checkOverlap(myDataFrameGenreAll, myDataFrameOverview):
+    # returns the number of violent movies in overview that are in genre
+    overlapCount = 0
+
+    for x, y in zip(myDataFrameGenreAll['violent_1_or_0'], myDataFrameOverview['violent_1_or_0']):
+        if(x == 1 and y == 1):
+            overlapCount += 1
+        if(x == 0 and y == 0):
+            overlapCount += 1
+
+    return overlapCount/len(myDataFrameGenreAll)
+
+
 def main():
     # runs a linear correlation test for the proportion of violent movies over
     # time by genre and then by looking at violent words in the overview description
@@ -191,6 +204,8 @@ def main():
     myDataFrameOverview = createBinaryViolentMovieColumnByOverview(
         myDataFrame.copy(), listOfViolentWords)
 
+    # this shows overlap. Since overlap is not very high, we combined both
+    print(checkOverlap(myDataFrameGenreAll, myDataFrameOverview))
     # now getting ready for the graph
 
     # this if for all genres
